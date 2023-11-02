@@ -2,15 +2,17 @@
 
 namespace Core\BoundedContext\Tenant\User\Infrastructure\Persistence\Eloquent;
 
+use Core\BoundedContext\Tenant\User\Infrastructure\Database\Factories\UserModelFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 use Tenancy\Affects\Connections\Support\Traits\OnTenant;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class UserModel extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, OnTenant;
+    use HasFactory, Notifiable, OnTenant, HasRoles;
 
     protected $table = 'users';
     protected $keyType = 'string';
@@ -59,12 +61,18 @@ class UserModel extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = ['role_names'];
+
+    public function getRoleNamesAttribute() {
+        return $this->roles->pluck('name');
+    }
+
     protected static function newFactory(): UserModelFactory
     {
         return UserModelFactory::new();
     }
 
-    public function getJWTIdentifier()
+    public function getJWTIdentifier(): mixed
     {
         return $this->getKey();
     }

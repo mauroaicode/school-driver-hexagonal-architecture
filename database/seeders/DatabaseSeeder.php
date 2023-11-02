@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Core\BoundedContext\Admin\User\Infrastructure\seeders\UserModelDatabaseSeeder;
+use Core\BoundedContext\Admin\Role\Infrastructure\Database\Seeders\RoleModelTableSeed;
+use Core\BoundedContext\Admin\User\Infrastructure\Database\Seeders\UserModelTableSeed;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,7 +17,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            UserModelDatabaseSeeder::class
+            RoleModelTableSeed::class,
+            UserModelTableSeed::class
+
         ]);
     }
 }

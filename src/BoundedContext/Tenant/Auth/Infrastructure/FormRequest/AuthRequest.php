@@ -23,4 +23,18 @@ class AuthRequest extends AppBaseFormRequest
             'password' => 'required'
         ];
     }
+
+    /**
+     * Define custom validation messages for the specified rules.
+     *
+     * @return array An array that maps rules to custom messages.
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingrese un correo electrónico válido.',
+            'password.required' => 'La contraseña es requerida.',
+        ];
+    }
 }

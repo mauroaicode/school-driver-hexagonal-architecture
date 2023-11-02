@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Core\Shared\Domain;
 
-use Core\Shared\Domain\Contracts\CollectionInterface;
+use Core\Shared\Domain\Contracts\CollectionContract;
 
-abstract class Collection implements CollectionInterface
+abstract class Collection implements CollectionContract
 {
     public function __construct(private array $items = []) {}
 

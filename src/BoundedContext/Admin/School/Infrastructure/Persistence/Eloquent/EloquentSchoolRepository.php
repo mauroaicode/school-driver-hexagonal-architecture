@@ -8,13 +8,13 @@ use Core\BoundedContext\Admin\School\Domain\{
     Schools,
     ValueObjects\SchoolId
 };
+use Core\Shared\Domain\Contracts\TransactionContract;
 use Exception;
-use Illuminate\Support\Facades\DB;
 
 class EloquentSchoolRepository implements SchoolRepositoryContract
 {
 
-    public function __construct(private SchoolModel $model)
+    public function __construct(private SchoolModel $model, private TransactionContract $transactionContract)
     {
     }
 
@@ -59,7 +59,7 @@ class EloquentSchoolRepository implements SchoolRepositoryContract
      */
     public function save(School $school): void
     {
-        DB::beginTransaction();
+        $this->transactionContract->beginTransaction();
 
         $schoolModel = $this->model->find($school->id()->value());
 
@@ -75,11 +75,11 @@ class EloquentSchoolRepository implements SchoolRepositoryContract
             $schoolModel->slug = $school->slug()->value();
             $schoolModel->save();
 
-            DB::commit();
+            $this->transactionContract->commit();
 
         } catch (Exception $e) {
 
-            DB::rollBack();
+            $this->transactionContract->rollback();
         }
     }
 
@@ -116,17 +116,17 @@ class EloquentSchoolRepository implements SchoolRepositoryContract
             return null;
         }
 
-        DB::beginTransaction();
+        $this->transactionContract->beginTransaction();
 
         try {
 
             $schoolModel->delete();
 
-            DB::commit();
+            $this->transactionContract->commit();
 
         } catch (Exception $e) {
 
-            DB::rollBack();
+            $this->transactionContract->rollback();
         }
 
         return $this->toDomain($schoolModel);

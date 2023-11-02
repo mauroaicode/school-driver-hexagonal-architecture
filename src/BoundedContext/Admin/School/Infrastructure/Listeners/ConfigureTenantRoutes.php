@@ -11,10 +11,11 @@ class ConfigureTenantRoutes
         if ($event->event->tenant) {
             $basePath = base_path('src/BoundedContext/Tenant');
             $apiRoutes = File::glob($basePath . '/**/Infrastructure/routes/api.php');
+            config('permission.models.role', Core\BoundedContext\Admin\Role\Infrastructure\Persistence\Eloquent\RoleModel::class);
 
-            $event
-                ->flush()
-                ->fromFile(['prefix' => '{tenant}/api'], $apiRoutes[0]);
+            foreach ($apiRoutes as $route) {
+                $event->fromFile(['prefix' => '{tenant}/api'], $route);
+            }
         }
     }
 }

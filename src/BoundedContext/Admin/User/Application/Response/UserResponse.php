@@ -6,16 +6,11 @@ use Core\BoundedContext\Admin\User\Domain\User;
 
 class UserResponse
 {
-    private string $id;
-    private string $email;
 
-    public function __construct($id, $email)
-    {
-        $this->id = $id;
-        $this->email = $email;
-    }
 
-    public static function fromGame(User $user): self
+    public function __construct(private string $id, private string $email){}
+
+    public static function fromUser(User $user): self
     {
         return new self(
             $user->id()->value(),

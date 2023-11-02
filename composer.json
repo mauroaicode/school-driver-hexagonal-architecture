@@ -10,6 +10,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "spatie/laravel-permission": "^5.11",
         "tenancy/affects-routes": "^2.1",
         "tenancy/affects-urls": "^2.1",
         "tenancy/db-driver-mysql": "^2.1",

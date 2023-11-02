@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use Core\BoundedContext\Admin\Role\Infrastructure\Persistence\Eloquent\RoleModel;
+use Core\BoundedContext\Admin\School\Infrastructure\Persistence\Eloquent\SchoolModel;
+use Core\Shared\Domain\Contracts\TransactionContract;
+use Core\Shared\Domain\Contracts\UuidGeneratorContract;
+use Core\Shared\Infrastructure\Handlers\DatabaseTransactionHandler;
+use Core\Shared\Infrastructure\Handlers\RamseyUuidGenerator;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
 use Tenancy\Identification\Contracts\ResolvesTenants;
-use Core\Shared\Domain\Contracts\UuidGeneratorContract;
-use Core\Shared\Infrastructure\RamseyUuidGeneratorContract;
-use Core\BoundedContext\Admin\School\Infrastructure\Persistence\Eloquent\SchoolModel;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -17,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->resolving(ResolvesTenants::class, function (ResolvesTenants $resolver) {
             $resolver->addModel(SchoolModel::class);
@@ -25,8 +28,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(
+            TransactionContract::class,
+            DatabaseTransactionHandler::class
+        );
+
+        $this->app->bind(
             UuidGeneratorContract::class,
-            RamseyUuidGeneratorContract::class,
+            RamseyUuidGenerator::class,
         );
     }
 
@@ -37,12 +45,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        config('permission.models.role', RoleModel::class);
         /**
          * Cargar migraciones del BoundedContext
          */
         if (!Request::is('api/*')) {
             $this->loadMigrationsFrom(
-                \File::allFiles(base_path("src/BoundedContext/Admin/**/Infrastructure/migrations"))
+                \File::allFiles(base_path("src/BoundedContext/Admin/**/Infrastructure/Database/Migrations"))
             );
         }
 

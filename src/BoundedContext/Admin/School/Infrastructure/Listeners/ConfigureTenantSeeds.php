@@ -2,9 +2,12 @@
 
 namespace Core\BoundedContext\Admin\School\Infrastructure\Listeners;
 
-use Core\BoundedContext\Tenant\GenderIdentity\Infrastructure\Persistence\Eloquent\GenderIdentityModelSeed;
-use Core\BoundedContext\Tenant\IdentificationType\Infrastructure\Persistence\Eloquent\IdentificationTypeModelSeed;
-use Core\BoundedContext\Tenant\User\Infrastructure\Persistence\Eloquent\UserModelSeed;
+use Core\BoundedContext\Tenant\{Role\Infrastructure\Database\Seeders\RoleModelTableSeed,
+    User\Infrastructure\Database\Seeders\UserModelTableSeed,
+    GenderIdentity\Infrastructure\Persistence\Eloquent\GenderIdentityModelSeed,
+    IdentificationType\Infrastructure\Persistence\Eloquent\IdentificationTypeModelSeed,
+    Vehicle\Infrastructure\Database\Seeders\VehicleModelTableSeed
+};
 use Tenancy\Hooks\Migration\Events\ConfigureSeeds;
 
 class ConfigureTenantSeeds
@@ -13,6 +16,8 @@ class ConfigureTenantSeeds
     {
         $event->seed(GenderIdentityModelSeed::class);
         $event->seed(IdentificationTypeModelSeed::class);
-        $event->seed(UserModelSeed::class);
+        $event->seed(RoleModelTableSeed::class);
+        $event->seed(UserModelTableSeed::class);
+        $event->seed(VehicleModelTableSeed::class);
     }
 }

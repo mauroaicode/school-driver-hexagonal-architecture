@@ -2,23 +2,33 @@
 
 namespace Core\BoundedContext\Admin\Auth\Application\Actions;
 
-use Exception;
-use Core\BoundedContext\Admin\Auth\Infrastructure\Persistence\AuthRepository;
+use Core\BoundedContext\Admin\Auth\Application\Responses\AuthenticatedResponse;
+use Core\BoundedContext\Admin\Auth\Domain\{Authenticated, Credentials, Contracts\AuthRepositoryContract, ValueObjects\AuthEmail, ValueObjects\AuthPassword};
+
 
 class LoginUseCase
 {
-    public function __construct(private AuthRepository $authRepository){}
+    public function __construct(private AuthRepositoryContract $authRepository){}
 
     /**
      * Performs user authentication using the credentials provided.
      *
-     * @param array $credentials The user's credentials for authentication.
+     * @param string $email
+     * @param string $password
      * @return object An object with the authentication token and the authenticated user's data.
-     * @throws Exception If an exception occurs during the authentication process.
      */
-    public function __invoke(array $credentials): object
+    public function __invoke(string $email, string $password): object
     {
-        return $this->authRepository->login($credentials);
+        $email = new AuthEmail($email);
+        $password = new AuthPassword($password);
+
+        $credentials = Credentials::signIn($email, $password);
+
+        $response = $this->authRepository->login($credentials);
+
+        $authenticated = Authenticated::generateAuth($response->token(), $response->id(), $response->email());
+
+        return AuthenticatedResponse::fromAuthenticated($authenticated);
     }
 
 }

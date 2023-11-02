@@ -5,11 +5,11 @@ namespace Core\BoundedContext\Tenant\Auth\Infrastructure\Controllers;
 use Throwable;
 use Illuminate\Http\JsonResponse;
 use Core\Shared\Infrastructure\Controllers\AppBaseController;
-use Core\BoundedContext\Tenant\Auth\{Application\Actions\LogoutUser, Infrastructure\Persistence\AuthRepository};
+use Core\BoundedContext\Tenant\Auth\{Application\Actions\LogoutUseCase, Infrastructure\Persistence\AuthJwtRepository};
 
 class LogoutPostController extends AppBaseController
 {
-    public function __construct(private AuthRepository $authRepository){}
+    public function __construct(private AuthJwtRepository $authRepository){}
 
     /**
      * Logs out the current user and returns a confirmation message.
@@ -21,7 +21,7 @@ class LogoutPostController extends AppBaseController
 
         try {
 
-            $logoutResponse = (new LogoutUser($this->authRepository))();
+            $logoutResponse = (new LogoutUseCase($this->authRepository))();
 
             return $this->sendSuccess($logoutResponse);
 

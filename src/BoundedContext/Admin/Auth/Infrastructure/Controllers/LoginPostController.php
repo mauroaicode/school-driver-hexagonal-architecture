@@ -6,12 +6,12 @@ use Throwable;
 use Illuminate\Http\JsonResponse;
 use Core\Shared\Infrastructure\Controllers\AppBaseController;
 use Core\BoundedContext\Admin\Auth\Application\Actions\LoginUseCase;
-use Core\BoundedContext\Admin\Auth\Infrastructure\{FormRequest\AuthRequest, Persistence\AuthRepository};
+use Core\BoundedContext\Admin\Auth\Infrastructure\{FormRequest\AuthRequest, Persistence\AuthJwtRepository};
 
 class LoginPostController extends AppBaseController
 {
 
-    public function __construct(private AuthRepository $authRepository){}
+    public function __construct(private AuthJwtRepository $authRepository){}
 
     /**
      * Handles login requests and responds with a JSON response.
@@ -22,15 +22,14 @@ class LoginPostController extends AppBaseController
     public function __invoke(AuthRequest $request): JsonResponse
     {
         try {
-            $credentials = $request->only(['email', 'password']);
-
-            $authUserData = (new LoginUseCase(
+            $authenticatedResponse = (new LoginUseCase(
                 $this->authRepository,
             ))(
-                $credentials
+                $request->get('email'),
+                $request->get('password')
             );
 
-            return $this->sendSuccess($authUserData);
+            return $this->sendSuccess($authenticatedResponse->toArray());
 
         } catch (Throwable $th) {
 

@@ -11,7 +11,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 final class AuthJwt implements AuthContract
 {
     /**
-     * Authenticate the user with the credentials provided.
+     * Credentials the user with the credentials provided.
      *
      * @param array $credentials The authentication credentials.
      * @param string $type The type of authentication guard to use.
