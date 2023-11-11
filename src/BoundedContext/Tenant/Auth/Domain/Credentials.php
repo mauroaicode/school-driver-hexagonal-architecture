@@ -6,9 +6,7 @@ use Core\BoundedContext\Tenant\Auth\Domain\ValueObjects\{AuthEmail, AuthPassword
 
 final class Credentials
 {
-    public function __construct(private AuthEmail $email, private AuthPassword $password)
-    {
-    }
+    public function __construct(private AuthEmail $email, private AuthPassword $password){}
 
     /**
      * Creates a new Credentials object with the credentials provided.

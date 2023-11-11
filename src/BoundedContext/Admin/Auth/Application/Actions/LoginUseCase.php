@@ -2,8 +2,8 @@
 
 namespace Core\BoundedContext\Admin\Auth\Application\Actions;
 
-use Core\BoundedContext\Admin\Auth\Application\Responses\AuthenticatedResponse;
-use Core\BoundedContext\Admin\Auth\Domain\{Authenticated, Credentials, Contracts\AuthRepositoryContract, ValueObjects\AuthEmail, ValueObjects\AuthPassword};
+use Core\BoundedContext\Admin\Auth\Application\Responses\AuthResponse;
+use Core\BoundedContext\Admin\Auth\Domain\{Auth, Credentials, Contracts\AuthRepositoryContract, ValueObjects\AuthEmail, ValueObjects\AuthPassword};
 
 
 class LoginUseCase
@@ -26,9 +26,9 @@ class LoginUseCase
 
         $response = $this->authRepository->login($credentials);
 
-        $authenticated = Authenticated::generateAuth($response->token(), $response->id(), $response->email());
+        $authenticated = Auth::generateAuth($response->token(), $response->id(), $response->email(), $response->roles());
 
-        return AuthenticatedResponse::fromAuthenticated($authenticated);
+        return AuthResponse::fromAuthenticated($authenticated);
     }
 
 }

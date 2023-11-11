@@ -24,7 +24,7 @@ return [
          * `Spatie\Permission\Contracts\Role` contract.
          */
 
-        'role' => Core\BoundedContext\Tenant\Role\Infrastructure\Persistence\Eloquent\RoleModel::class,
+        'role' => Core\BoundedContext\Admin\Role\Infrastructure\Persistence\Eloquent\RoleModel::class,
 
     ],
 

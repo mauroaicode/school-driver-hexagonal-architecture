@@ -6,12 +6,13 @@ use Throwable;
 use Illuminate\Http\JsonResponse;
 use Core\Shared\Infrastructure\Controllers\AppBaseController;
 use Core\BoundedContext\Admin\Auth\Application\Actions\LoginUseCase;
-use Core\BoundedContext\Admin\Auth\Infrastructure\{FormRequest\AuthRequest, Persistence\AuthJwtRepository};
+use Core\BoundedContext\Admin\Auth\Domain\Contracts\AuthRepositoryContract;
+use Core\BoundedContext\Admin\Auth\Infrastructure\{FormRequest\AuthRequest};
 
 class LoginPostController extends AppBaseController
 {
 
-    public function __construct(private AuthJwtRepository $authRepository){}
+    public function __construct(private AuthRepositoryContract $authRepository){}
 
     /**
      * Handles login requests and responds with a JSON response.

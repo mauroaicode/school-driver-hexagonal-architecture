@@ -2,11 +2,11 @@
 
 namespace Core\BoundedContext\Tenant\Auth\Application\Actions;
 
-use Core\BoundedContext\Tenant\Auth\Infrastructure\Persistence\AuthJwtRepository;
+use Core\BoundedContext\Tenant\Auth\Domain\Contracts\AuthRepositoryContract;
 
 class LogoutUseCase
 {
-    public function __construct(private AuthJwtRepository $authRepository){}
+    public function __construct(private AuthRepositoryContract $authRepository){}
 
     /**
      * Logs out the current user.

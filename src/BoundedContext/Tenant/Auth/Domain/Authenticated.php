@@ -2,84 +2,49 @@
 
 namespace Core\BoundedContext\Tenant\Auth\Domain;
 
-use Core\BoundedContext\Tenant\{Auth\Domain\ValueObjects\AuthEmail,
-    Auth\Domain\ValueObjects\AuthId,
-    Auth\Domain\ValueObjects\AuthToken
-};
+use Core\BoundedContext\Tenant\Role\Domain\Roles;
 
 class Authenticated
 {
     public function __construct(
-        private AuthToken $token,
-        private AuthId    $id,
-        private AuthEmail $email
-    )
-    {
-    }
+        private Auth $auth,
+        private Roles $roles
+    ){}
 
     /**
-     * Creates a new Authenticated object from its primitive components.
+     * Generate an Auth object from AuthToken, AuthId and AuthEmail value objects.
      *
-     * @param string $token Authentication token.
-     * @param string $id Authentication ID.
-     * @param string $email Email address.
-     *
-     * @return Authenticated Authenticated object created with the primitive components.
+     * @param Auth $auth
+     * @param Roles $roles
+     * @return Authenticated Auth object generated from the value objects.
      */
-    public static function fromPrimitives(string $token, string $id, string $email): self
+    public
+    static function generateAuth(Auth $auth, Roles $roles): Authenticated
     {
         return new self(
-            new AuthToken($token),
-            new AuthId($id),
-            new AuthEmail($email)
-        );
-    }
-
-    /**
-     * Generate an Authenticated object from AuthToken, AuthId and AuthEmail value objects.
-     *
-     * @param AuthToken $token Value object representing the authentication token.
-     * @param AuthId $id Value object representing the authentication ID.
-     * @param AuthEmail $email Value object representing the email address.
-     *
-     * @return Authenticated Authenticated object generated from the value objects.
-     */
-    public static function generateAuth(AuthToken $token, AuthId $id, AuthEmail $email): Authenticated
-    {
-        return new self(
-            $token,
-            $id,
-            $email
+            $auth,
+            $roles
         );
     }
 
     /**
      * Gets the authentication token associated with this authentication information.
      *
-     * @return AuthToken Value object representing the authentication token.
+     * @return Auth Value object representing the authentication token.
      */
-    public function token(): AuthToken
+    public function auth(): Auth
     {
-        return $this->token;
+        return $this->auth;
     }
 
     /**
      * Gets the authentication ID associated with this authentication information.
      *
-     * @return AuthId Value object representing the authentication ID.
+     * @return Roles Value object representing the authentication ID.
      */
-    public function id(): AuthId
+    public function roles(): Roles
     {
-        return $this->id;
+        return $this->roles;
     }
 
-    /**
-     * Gets the e-mail address associated with this authentication information.
-     *
-     * @return AuthEmail Value object representing the email address.
-     */
-    public function email(): AuthEmail
-    {
-        return $this->email;
-    }
 }

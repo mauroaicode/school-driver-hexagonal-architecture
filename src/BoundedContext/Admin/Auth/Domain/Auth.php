@@ -4,52 +4,53 @@ namespace Core\BoundedContext\Admin\Auth\Domain;
 
 use Core\BoundedContext\Admin\{Auth\Domain\ValueObjects\AuthEmail,
     Auth\Domain\ValueObjects\AuthId,
-    Auth\Domain\ValueObjects\AuthToken
-};
+    Auth\Domain\ValueObjects\AuthToken,
+    Role\Domain\Roles};
 
-class Authenticated
+class Auth
 {
     public function __construct(
         private AuthToken $token,
         private AuthId    $id,
-        private AuthEmail $email
-    )
-    {
-    }
+        private AuthEmail $email,
+        private Roles $roles
+    ){}
 
     /**
-     * Creates a new Authenticated object from its primitive components.
+     * Creates a new Auth object from its primitive components.
      *
      * @param string $token Authentication token.
      * @param string $id Authentication ID.
      * @param string $email Email address.
      *
-     * @return Authenticated Authenticated object created with the primitive components.
+     * @return Auth Auth object created with the primitive components.
      */
-    public static function fromPrimitives(string $token, string $id, string $email): self
+    public static function fromPrimitives(string $token, string $id, string $email, array $roles): self
     {
         return new self(
             new AuthToken($token),
             new AuthId($id),
-            new AuthEmail($email)
+            new AuthEmail($email),
+            new Roles($roles)
         );
     }
 
     /**
-     * Generate an Authenticated object from AuthToken, AuthId and AuthEmail value objects.
+     * Generate an Auth object from AuthToken, AuthId and AuthEmail value objects.
      *
      * @param AuthToken $token Value object representing the authentication token.
      * @param AuthId $id Value object representing the authentication ID.
      * @param AuthEmail $email Value object representing the email address.
      *
-     * @return Authenticated Authenticated object generated from the value objects.
+     * @return Auth Auth object generated from the value objects.
      */
-    public static function generateAuth(AuthToken $token, AuthId $id, AuthEmail $email): Authenticated
+    public static function generateAuth(AuthToken $token, AuthId $id, AuthEmail $email, Roles $roles): Auth
     {
         return new self(
             $token,
             $id,
-            $email
+            $email,
+            $roles
         );
     }
 
@@ -81,5 +82,15 @@ class Authenticated
     public function email(): AuthEmail
     {
         return $this->email;
+    }
+
+    /**
+     * Gets the roles associated with this authentication information.
+     *
+     * @return Roles A collection of roles associated with the authentication.
+     */
+    public function roles(): Roles
+    {
+        return $this->roles;
     }
 }

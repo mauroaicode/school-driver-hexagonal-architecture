@@ -4,4 +4,4 @@ namespace Core\BoundedContext\Tenant\Auth\Domain\ValueObjects;
 
 use Core\Shared\Domain\ValueObjects\StringValueObject;
 
-class AuthToken extends StringValueObject {}
+final class AuthToken extends StringValueObject {}

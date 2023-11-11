@@ -2,13 +2,12 @@
 
 namespace Core\BoundedContext\Tenant\Auth\Application\Actions;
 
-use Core\BoundedContext\Tenant\Auth\Application\Responses\AuthenticatedResponse;
+use Core\BoundedContext\Tenant\Auth\Application\Responses\AuthResponse;
 use Core\BoundedContext\Tenant\Auth\Domain\ValueObjects\{AuthEmail, AuthPassword};
-use Core\BoundedContext\Tenant\Auth\Domain\{Authenticated, Credentials, Contracts\AuthRepositoryContract};
+use Core\BoundedContext\Tenant\Auth\Domain\{Auth, Credentials, Contracts\AuthRepositoryContract};
 
 final class LoginUseCase
 {
-
     public function __construct(private AuthRepositoryContract $authRepository){}
 
     /**
@@ -16,9 +15,9 @@ final class LoginUseCase
      *
      * @param string $email
      * @param string $password
-     * @return AuthenticatedResponse An object with the authentication token and the authenticated user's data.
+     * @return AuthResponse An object with the authentication token and the authenticated user's data.
      */
-    public function __invoke(string $email, string $password): AuthenticatedResponse
+    public function __invoke(string $email, string $password): AuthResponse
     {
         $email = new AuthEmail($email);
         $password = new AuthPassword($password);
@@ -27,9 +26,9 @@ final class LoginUseCase
 
         $response = $this->authRepository->login($credentials);
 
-        $authenticated = Authenticated::generateAuth($response->token(), $response->id(), $response->email());
+        $authenticated = Auth::generateAuth($response->token(), $response->id(), $response->email(), $response->roles());
 
-        return AuthenticatedResponse::fromAuthenticated($authenticated);
+        return AuthResponse::fromAuthenticated($authenticated);
     }
 
 }

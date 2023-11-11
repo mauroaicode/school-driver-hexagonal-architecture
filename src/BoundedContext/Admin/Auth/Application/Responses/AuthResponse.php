@@ -2,31 +2,32 @@
 
 namespace Core\BoundedContext\Admin\Auth\Application\Responses;
 
-use Core\BoundedContext\Admin\Auth\Domain\Authenticated;
+use Core\BoundedContext\Admin\Auth\Domain\Auth;
+use Core\BoundedContext\Admin\Role\{Applications\Responses\RolesResponse, Domain\Roles};
 
-final class AuthenticatedResponse
+final class AuthResponse
 {
     public function __construct(
         private string $token,
         private string $id,
         private string $email,
-    )
-    {
-    }
+        private Roles $roles
+    ){}
 
     /**
-     * Creates an instance of AuthenticatedResponse from an Authenticated object.
+     * Creates an instance of AuthResponse from an Auth object.
      *
-     * @param Authenticated $authenticated Object containing authentication information.
+     * @param Auth $authenticated Object containing authentication information.
      *
-     * @return AuthenticatedResponse Instance of AuthenticatedResponse created from the Authenticated object.
+     * @return AuthResponse Instance of AuthResponse created from the Auth object.
      */
-    public static function fromAuthenticated(Authenticated $authenticated): self
+    public static function fromAuthenticated(Auth $authenticated): self
     {
         return new self(
             token: $authenticated->token()->value(),
             id: $authenticated->id()->value(),
-            email: $authenticated->email()->value()
+            email: $authenticated->email()->value(),
+            roles: $authenticated->roles()
         );
     }
 
@@ -71,8 +72,9 @@ final class AuthenticatedResponse
             'token' => $this->token,
             'user' => (object)[
                 'id' => $this->id,
-                'email' => $this->email
-            ]
+                'email' => $this->email,
+            ],
+            'roles' => RolesResponse::fromRoles($this->roles)->toArray()
         ];
     }
 }
